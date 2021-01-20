@@ -1,8 +1,25 @@
 package com.udacity.asteroidradar
 
+import android.view.View
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import com.squareup.picasso.Picasso
+import com.udacity.asteroidradar.network.ApiStatus
+
+
+@BindingAdapter("imageUrl")
+fun setImageUrl(imageView: ImageView, pictureOfDay: PictureOfDay?) {
+    pictureOfDay?.let {
+        if (pictureOfDay.mediaType == "image") {
+            Picasso.with(imageView.context).load(pictureOfDay.url).into(imageView)
+        }
+        imageView.contentDescription = pictureOfDay.title
+    } ?: run {
+        Picasso.with(imageView.context).load(R.drawable.placeholder_picture_of_day).into(imageView)
+    }
+}
 
 @BindingAdapter("statusIcon")
 fun bindAsteroidStatusImage(imageView: ImageView, isHazardous: Boolean) {
@@ -38,4 +55,19 @@ fun bindTextViewToKmUnit(textView: TextView, number: Double) {
 fun bindTextViewToDisplayVelocity(textView: TextView, number: Double) {
     val context = textView.context
     textView.text = String.format(context.getString(R.string.km_s_unit_format), number)
+}
+
+@BindingAdapter("apiStatus")
+fun bindStatus(progressBar: ProgressBar, status: ApiStatus?) {
+    when (status) {
+        ApiStatus.LOADING -> {
+            progressBar.visibility = View.VISIBLE
+        }
+        ApiStatus.ERROR -> {
+            progressBar.visibility = View.GONE
+        }
+        ApiStatus.DONE -> {
+            progressBar.visibility = View.GONE
+        }
+    }
 }
