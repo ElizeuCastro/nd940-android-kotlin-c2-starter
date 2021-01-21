@@ -23,7 +23,8 @@ import androidx.work.WorkerParameters
 import com.udacity.asteroidradar.database.getDatabase
 import com.udacity.asteroidradar.repository.AsteroidRepository
 
-class RefreshDataWorker(private val context: Context, params: WorkerParameters): CoroutineWorker(context, params) {
+class RefreshDataWorker(private val context: Context, params: WorkerParameters) :
+    CoroutineWorker(context, params) {
 
     companion object {
         const val WORK_NAME = "RefreshDataWorker"

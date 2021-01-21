@@ -9,13 +9,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
-class AsteroidRadarApplication: Application() {
+class AsteroidRadarApplication : Application() {
 
     private val applicationScope = CoroutineScope(Dispatchers.Default)
 
     override fun onCreate() {
         super.onCreate()
-//        delayedInit()
+        delayedInit()
     }
 
     private fun delayedInit() {
@@ -42,6 +42,7 @@ class AsteroidRadarApplication: Application() {
         WorkManager.getInstance().enqueueUniquePeriodicWork(
             RefreshDataWorker.WORK_NAME,
             ExistingPeriodicWorkPolicy.KEEP,
-            repeatingRequest)
+            repeatingRequest
+        )
     }
 }

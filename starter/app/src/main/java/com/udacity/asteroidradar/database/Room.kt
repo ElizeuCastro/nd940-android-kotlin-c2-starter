@@ -4,8 +4,11 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.udacity.asteroidradar.Converters
 
 @Database(entities = [AsteroidEntity::class, PictureOfDayEntity::class], version = 1)
+@TypeConverters(Converters::class)
 abstract class AsteroidDatabase : RoomDatabase() {
     abstract val asteroidDao: AsteroidDao
     abstract val pictureOfDayDao: PictureOfDayDao

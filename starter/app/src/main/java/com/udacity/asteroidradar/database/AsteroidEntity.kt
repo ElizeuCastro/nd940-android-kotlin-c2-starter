@@ -21,6 +21,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.udacity.asteroidradar.Asteroid
+import com.udacity.asteroidradar.toText
+import java.util.*
 
 @Entity(tableName = "asteroid_table")
 data class AsteroidEntity constructor(
@@ -34,7 +36,7 @@ data class AsteroidEntity constructor(
     val name: String,
 
     @ColumnInfo(name = "close_approach_date")
-    val closeApproachDate: String,
+    val closeApproachDate: Date,
 
     @ColumnInfo(name = "absolute_magnitude")
     val absoluteMagnitude: Double,
@@ -58,7 +60,7 @@ fun List<AsteroidEntity>.asDomainModel(): List<Asteroid> {
             id = asteroid.id,
             remoteId = asteroid.remoteId,
             codename = asteroid.name,
-            closeApproachDate = asteroid.closeApproachDate,
+            closeApproachDate = asteroid.closeApproachDate.toText(),
             absoluteMagnitude = asteroid.absoluteMagnitude,
             estimatedDiameter = asteroid.estimatedDiameter,
             relativeVelocity = asteroid.relativeVelocity,

@@ -3,6 +3,7 @@ package com.udacity.asteroidradar.network
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.udacity.asteroidradar.database.AsteroidEntity
+import com.udacity.asteroidradar.toDate
 
 @JsonClass(generateAdapter = true)
 data class NearEarthObjects(
@@ -49,21 +50,21 @@ data class MissDistance(
 )
 
 fun NearEarthObjects.asDatabaseModel(): Array<AsteroidEntity> =
-        asteroids.entries.map { it.value }.flatten().map { asteroid ->
-                AsteroidEntity(
-                        remoteId = asteroid.id,
-                        name = asteroid.name,
-                        closeApproachDate = asteroid.closeApproachData.first().run {
-                                closeApproachDate
-                        }.toString(),
-                        absoluteMagnitude = asteroid.absoluteMagnitude,
-                        estimatedDiameter = asteroid.estimatedDiameter.kilometers.maximumDiameter,
-                        relativeVelocity = asteroid.closeApproachData.first().run {
-                                relativeVelocity.kilometersPerSecond
-                        }.toDouble(),
-                        distanceFromEarth = asteroid.closeApproachData.first().run {
-                                missDistance.astronomical
-                        }.toDouble(),
-                        isPotentiallyHazardous = asteroid.isPotentiallyHazardousAsteroid
-                )
-        }.toTypedArray()
+    asteroids.entries.map { it.value }.flatten().map { asteroid ->
+        AsteroidEntity(
+                remoteId = asteroid.id,
+                name = asteroid.name,
+                closeApproachDate = asteroid.closeApproachData.first().run {
+                        closeApproachDate
+                }.toDate(),
+                absoluteMagnitude = asteroid.absoluteMagnitude,
+                estimatedDiameter = asteroid.estimatedDiameter.kilometers.maximumDiameter,
+                relativeVelocity = asteroid.closeApproachData.first().run {
+                        relativeVelocity.kilometersPerSecond
+                }.toDouble(),
+                distanceFromEarth = asteroid.closeApproachData.first().run {
+                        missDistance.astronomical
+                }.toDouble(),
+                isPotentiallyHazardous = asteroid.isPotentiallyHazardousAsteroid
+        )
+    }.toTypedArray()

@@ -1,14 +1,13 @@
 package com.udacity.asteroidradar.main
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
 import com.udacity.asteroidradar.R
 import com.udacity.asteroidradar.databinding.FragmentMainBinding
+import com.udacity.asteroidradar.network.AsteroidFilter
 
 class MainFragment : Fragment() {
 
@@ -54,6 +53,13 @@ class MainFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        viewModel.search(
+            when (item.itemId) {
+                R.id.week -> AsteroidFilter.WEEK
+                R.id.today -> AsteroidFilter.TODAY
+                else -> AsteroidFilter.SAVED
+            }
+        )
         return true
     }
 }

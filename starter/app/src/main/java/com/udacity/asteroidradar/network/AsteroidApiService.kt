@@ -10,6 +10,12 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
 
+enum class AsteroidFilter {
+    WEEK,
+    TODAY,
+    SAVED
+}
+
 enum class ApiStatus { LOADING, ERROR, DONE }
 
 private val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
@@ -28,14 +34,20 @@ private val retrofit = Retrofit.Builder()
 interface AsteroidApiService {
 
     @GET("neo/rest/v1/feed")
-    suspend fun getNearEarthObjects(@Query("api_key") apiKey: String = "7BhaQjxceguIXIpIg3tOiXboH19hd6R2AhDb7CM7"): NearEarthObjects
+    suspend fun getNearEarthObjects(
+        @Query("start_date") startDate: String,
+        @Query("end_date") endDate: String,
+        @Query("api_key") apiKey: String = "7BhaQjxceguIXIpIg3tOiXboH19hd6R2AhDb7CM7"
+    ): NearEarthObjects
 
 }
 
 interface PictureOfDayService {
 
     @GET("planetary/apod")
-    suspend fun getPictureOfDay(@Query("api_key") apiKey: String = "7BhaQjxceguIXIpIg3tOiXboH19hd6R2AhDb7CM7"): PictureOfDayProperty
+    suspend fun getPictureOfDay(
+        @Query("api_key") apiKey: String = "7BhaQjxceguIXIpIg3tOiXboH19hd6R2AhDb7CM7"
+    ): PictureOfDayProperty
 
 }
 
