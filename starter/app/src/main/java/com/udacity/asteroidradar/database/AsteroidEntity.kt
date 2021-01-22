@@ -26,11 +26,9 @@ import java.util.*
 
 @Entity(tableName = "asteroid_table")
 data class AsteroidEntity constructor(
-    @PrimaryKey(autoGenerate = true)
-    var id: Long = 0L,
 
-    @ColumnInfo(name = "remote_id")
-    val remoteId: String,
+    @PrimaryKey
+    val id: Long = 0L,
 
     @ColumnInfo(name = "name")
     val name: String,
@@ -58,7 +56,6 @@ fun List<AsteroidEntity>.asDomainModel(): List<Asteroid> {
     return map { asteroid ->
         Asteroid(
             id = asteroid.id,
-            remoteId = asteroid.remoteId,
             codename = asteroid.name,
             closeApproachDate = asteroid.closeApproachDate.toText(),
             absoluteMagnitude = asteroid.absoluteMagnitude,
@@ -66,7 +63,6 @@ fun List<AsteroidEntity>.asDomainModel(): List<Asteroid> {
             relativeVelocity = asteroid.relativeVelocity,
             distanceFromEarth = asteroid.distanceFromEarth,
             isPotentiallyHazardous = asteroid.isPotentiallyHazardous
-
         )
     }
 }

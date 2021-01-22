@@ -21,60 +21,49 @@ class MainViewModel(application: Application) : ViewModel() {
     val status: LiveData<ApiStatus>
         get() = _status
 
-    private var _asteroids = MutableLiveData<List<Asteroid>>()
-    val asteroids: LiveData<List<Asteroid>>
-        get() = _asteroids
-
+    private val asteroidFilterSelected = MutableLiveData(AsteroidFilter.WEEK)
     val pictureOfDay = asteroidRepository.pictureOfDay
+    val asteroids = Transformations.switchMap(asteroidFilterSelected) { filter ->
+        when (filter) {
+            AsteroidFilter.WEEK -> asteroidRepository.getAsteroids(
+                Date(),
+                getDate(Constants.DEFAULT_END_DATE_DAYS)
+            )
+            AsteroidFilter.TODAY -> asteroidRepository.getAsteroids(Date(), Date())
+            else -> asteroidRepository.getAllAsteroids()
+        }
+    }
 
-    private var asteroidFilterSelected = AsteroidFilter.WEEK
+    private val _navigateToSelectedAsteroid = MutableLiveData<Asteroid>()
+    val navigateToSelectedAsteroid: LiveData<Asteroid>
+        get() = _navigateToSelectedAsteroid
 
     init {
+        refresh()
+    }
 
-        search(asteroidFilterSelected)
-
+    private fun refresh() {
         viewModelScope.launch {
             try {
                 _status.value = ApiStatus.LOADING
                 asteroidRepository.refresh()
-                search(asteroidFilterSelected)
                 _status.value = ApiStatus.DONE
             } catch (e: Exception) {
                 _status.value = ApiStatus.ERROR
-                _asteroids.value = ArrayList()
             }
         }
-    }
-
-    fun onAsteroidClicked(id: Long) {
-
     }
 
     fun search(asteroidFilter: AsteroidFilter) {
-        asteroidFilterSelected = asteroidFilter
-        viewModelScope.launch {
-            try {
-                _status.value = ApiStatus.LOADING
-                _asteroids.value = when (asteroidFilterSelected) {
-                    AsteroidFilter.WEEK -> {
-                        asteroidRepository.getAsteroids(
-                            Date(),
-                            getDate(Constants.DEFAULT_END_DATE_DAYS)
-                        )
-                    }
-                    AsteroidFilter.TODAY -> {
-                        asteroidRepository.getAsteroids(Date(), Date())
-                    }
-                    AsteroidFilter.SAVED -> {
-                        asteroidRepository.getAllAsteroids()
-                    }
-                }
-                _status.value = ApiStatus.DONE
-            } catch (e: Exception) {
-                _status.value = ApiStatus.ERROR
-                _asteroids.value = ArrayList()
-            }
-        }
+        asteroidFilterSelected.value = asteroidFilter
+    }
+
+    fun onAsteroidClicked(asteroid: Asteroid) {
+        _navigateToSelectedAsteroid.value = asteroid
+    }
+
+    fun openAsteroidDetailsComplete() {
+        _navigateToSelectedAsteroid.value = null
     }
 
     class Factory(val app: Application) : ViewModelProvider.Factory {

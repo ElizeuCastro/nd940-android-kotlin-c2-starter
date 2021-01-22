@@ -21,20 +21,21 @@
 
         <TextView
             android:id="@+id/name"
-            android:layout_width="wrap_content"
+            style="@style/ItemTitleStyle"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@{asteroid.codename}"
-            android:textAppearance="?textAppearanceHeadline6"
+            app:layout_constraintEnd_toStartOf="@+id/imageView"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/date"
-            android:layout_width="wrap_content"
+            style="@style/ItemSubTitleStyle"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:text="@{asteroid.closeApproachDate}"
-            android:textAppearance="?textAppearanceSubtitle2"
+            app:layout_constraintEnd_toStartOf="@+id/imageView"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/name" />
 
@@ -45,11 +46,9 @@
             android:contentDescription="@string/not_hazardous_asteroid_image"
             app:layout_constraintBottom_toBottomOf="@+id/date"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/name"
             app:layout_constraintTop_toTopOf="@+id/name"
             app:statusIcon="@{asteroid.isPotentiallyHazardous}"
-            tools:srcCompat="@drawable/ic_status_normal" />
+            tools:srcCompat="@drawable/ic_status_potentially_hazardous" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

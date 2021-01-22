@@ -31,6 +31,16 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
         }
     }
 
+    suspend fun deletePreviousAsteroids() {
+        withContext(Dispatchers.IO) {
+            val previousDay = getDate(-1)
+            val previousAsteroids = database.asteroidDao.getAsteroids(previousDay, previousDay)
+            previousAsteroids.value?.let { asteroids ->
+                database.asteroidDao.deleteByIds(asteroids.map { asteroid -> asteroid.id })
+            }
+        }
+    }
+
     private suspend fun refreshAsteroids(from: Date, to: Date) {
         val result = AsteroidApi.feedService.getNearEarthObjects(from.toText(), to.toText())
         database.asteroidDao.insertAll(*result.asDatabaseModel())
@@ -41,11 +51,13 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
         database.pictureOfDayDao.insert(result.asDatabaseModel())
     }
 
-    suspend fun getAsteroids(from: Date, to: Date) = withContext(Dispatchers.IO) {
-        database.asteroidDao.getAsteroids(from, to).asDomainModel()
-    }
+    fun getAsteroids(from: Date, to: Date) =
+        Transformations.map(database.asteroidDao.getAsteroids(from, to)) {
+            it.asDomainModel()
+        }
 
-    suspend fun getAllAsteroids() = withContext(Dispatchers.IO) {
-        database.asteroidDao.getAllAsteroids().asDomainModel()
-    }
+    fun getAllAsteroids() =
+        Transformations.map(database.asteroidDao.getAllAsteroids()) {
+            it.asDomainModel()
+        }
 }

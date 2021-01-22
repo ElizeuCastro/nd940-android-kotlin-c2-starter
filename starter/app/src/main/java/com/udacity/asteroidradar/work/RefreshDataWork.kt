@@ -34,6 +34,7 @@ class RefreshDataWorker(private val context: Context, params: WorkerParameters) 
         val database = getDatabase(context)
         val repository = AsteroidRepository(database)
         return try {
+            repository.deletePreviousAsteroids()
             repository.refresh()
             Result.success()
         } catch (e: Exception) {

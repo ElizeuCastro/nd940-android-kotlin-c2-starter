@@ -52,7 +52,7 @@ data class MissDistance(
 fun NearEarthObjects.asDatabaseModel(): Array<AsteroidEntity> =
     asteroids.entries.map { it.value }.flatten().map { asteroid ->
         AsteroidEntity(
-                remoteId = asteroid.id,
+                id = asteroid.id.toLong(),
                 name = asteroid.name,
                 closeApproachDate = asteroid.closeApproachData.first().run {
                         closeApproachDate
